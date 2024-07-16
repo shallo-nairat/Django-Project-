@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models.manager import BaseManager
 
 
 
@@ -14,6 +15,11 @@ class Course(models.Model):
     course_resources = models.CharField(max_length=255)
     teaching_assistant = models.CharField(max_length=100)
     department = models.CharField(max_length=100)
+
+    objects : BaseManager["Course"]
+
+
+
 
     def __str__(self):
         return f"{self.course_title}"

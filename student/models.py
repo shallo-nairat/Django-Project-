@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models.manager import BaseManager
 
 # Create your models here.
 class Student(models.Model):
@@ -16,6 +17,8 @@ class Student(models.Model):
     courses = models.ManyToManyField('course.Course', related_name='student')
     classes = models.ManyToManyField('class.Class', related_name='student')
     
+
+    objects : BaseManager["Student"]
     
     def __str__(self):
         return f"{self.first_name} {self.last_name}"

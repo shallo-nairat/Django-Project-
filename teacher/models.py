@@ -1,4 +1,6 @@
 from django.db import models
+from django.db.models.manager import BaseManager
+
 
 # Create your models here.
 class Teacher(models.Model):
@@ -15,6 +17,9 @@ class Teacher(models.Model):
     hire_date = models.DateField()
     bio = models.TextField()
 
+
+
+    objects : BaseManager["Teacher"]
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
