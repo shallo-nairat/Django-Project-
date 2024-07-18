@@ -4,7 +4,7 @@ from rest_framework import serializers
 from ClassPeriod.models import ClassPeriod
 
 from student.models import Student
-from course.models import Course
+from course.models  import Course
 from teacher.models import Teacher
 
 
@@ -25,4 +25,5 @@ class TeacherSerializer(serializers.ModelSerializer):
     class Meta:
         model = Teacher
         fields = '__all__'
+
 
