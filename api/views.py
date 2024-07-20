@@ -1,9 +1,11 @@
 
 from django.shortcuts import render
 from student.models import Student
-from ClassPeriod.models import ClassPeriod
+from classperiod.models import ClassPeriod
 from teacher.models import Teacher
 from course.models import Course
+from classroom.models import ClassRoom
+
 from rest_framework import status
 
 from .serializer import Student
@@ -14,6 +16,47 @@ from .serializer import StudentSerializer
 from .serializer import ClassPeriodSerializer
 from .serializer import TeacherSerializer
 from .serializer import CourseSerializer
+from .serializer import ClassRoomSerializer
+
+
+
+
+class ClassRoomListView(APIView):
+    def get(self, request):
+       classes = ClassRoom.objects.all()
+       serializer = ClassRoomSerializer(classes,many=True)
+       return Response(serializer.data)
+    
+    def post(self,request):
+        serializer = ClassRoomSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save
+            return Response(serializer.data, status = status.HTTP_201_CREATED)
+        
+        else: 
+            return Response(serializer.errors,status= status.HTTP_400_BAD_REQUEST)
+        
+
+class ClassRoomDetailView(APIView):
+    def get(self, request, id):
+        classes=ClassRoom.objects.get(id=id)
+        serializer =ClassRoomSerializer (classes)
+        return Response (serializer.data)   
+     
+    def put(self,request,id):
+        classes=ClassRoom.objects.get(id=id)
+        serializer =ClassRoomSerializer (classes)
+
+        if serializer.is_valid():
+            serializer.save
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+    def delete(self, request,id):
+        classes =ClassRoom.objects.get(id=id)
+        classes.delete()
+        return Response (status=status.HTTP_202_ACCEPTED)    
 
 
 
@@ -31,6 +74,8 @@ class StudentListView(APIView):
         
         else: 
             return Response(serializer.errors,status= status.HTTP_400_BAD_REQUEST)
+        
+
         
 class StudentDetailView(APIView):
     def get(self, request, id):
@@ -179,28 +224,3 @@ class CourseDetailView(APIView):
 
 
 
-
-
-# from django.shortcuts import render
-
-# Create your views here.
-
-# from rest_framework import serializers
-# from rest_framework.response import Response
-# from rest_framework.views import APIView
-# from student.models import Student
-# from serializer import StudentSerializer
-
-
-
-# class StudentSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Student
-#         fields = "__all__"
-
-
-# class StudentListView(APIView):
-#     def get(self, request):
-#     students= Student.objects.all()
-#     serializers = StudentSerializer(students,many=True)
-#     return Response(serializers.data)
