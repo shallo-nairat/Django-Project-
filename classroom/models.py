@@ -1,5 +1,5 @@
-# from django.db import models
-# from django.db.models.manager import BaseManager
+from django.db import models
+from django.db.models.manager import BaseManager
 
 
 
@@ -42,3 +42,5 @@ class ClassRoom(models.Model):
 
     def __str__(self):
         return f"{self.class_name}"
+    
+    objects : BaseManager["ClassRoom"]

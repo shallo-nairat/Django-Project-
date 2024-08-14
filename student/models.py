@@ -25,6 +25,8 @@
 
 
 from django.db import models
+from django.db.models.manager import BaseManager
+
 
 class Student(models.Model):
     first_name = models.CharField(max_length=100)
@@ -39,7 +41,11 @@ class Student(models.Model):
     address = models.TextField()
     bio = models.TextField()
     courses = models.ManyToManyField('course.Course', related_name='students')
-    # classeroom = models.ManyToManyField('classroom.ClassRoom', related_name='students')
+    classeroom = models.ManyToManyField('classroom.ClassRoom', related_name='students')
+
+
+    objects : BaseManager["Student"]
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
+    
