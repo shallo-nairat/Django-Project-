@@ -40,6 +40,7 @@ class Student(models.Model):
     phone_number = models.CharField(max_length=15)
     address = models.TextField()
     bio = models.TextField()
+    date_of_birth = models.DateField()
     courses = models.ManyToManyField('course.Course', related_name='students')
     classeroom = models.ManyToManyField('classroom.ClassRoom', related_name='students')
 

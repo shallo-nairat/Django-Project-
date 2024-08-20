@@ -12,7 +12,7 @@ from .serializer import Student
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .serializer import StudentSerializer
+from .serializer import StudentSerializer,MinimalStudentSerializer
 from .serializer import ClassPeriodSerializer
 from .serializer import TeacherSerializer
 from .serializer import CourseSerializer
@@ -20,14 +20,13 @@ from .serializer import ClassRoomSerializer
 
 
 
-
 class ClassRoomListView(APIView):
-    def get(self, request):
-       classes = ClassRoom.objects.all()
-       serializer = ClassRoomSerializer(classes,many=True)
-       return Response(serializer.data)
-    
-    def post(self,request):
+    def get(self, request,id):
+        student_class = Student.objects.get(id=id)
+        serializer = StudentSerializer(student_class)
+        return Response(serializer.data)
+     
+    def post(self,request,id):
         serializer = ClassRoomSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -61,17 +60,23 @@ class ClassRoomDetailView(APIView):
 
 
 class StudentListView(APIView):
+
     def get(self, request):
-       students = Student.objects.all()
-       first_name=request.query_params.get("first_name")
-       if first_name:
+        students = Student.objects.all()
+        serializer = MinimalStudentSerializer(students, many=True)
+        first_name=request.query_params.get("first_name")
+        if first_name:
            students=students.filter(first_name=first_name)
            country=request.query_params.get("country")
-       if country:
-           Student=Students.filter(country=country)   
+        if country:
+           student=students.filter(country=country)   
 
-       serializer = StudentSerializer(students,many=True)
-       return Response(serializer.data)
+        serializer = StudentSerializer(students,many=True)
+        return Response(serializer.data)
+    
+   
+
+
     
     def post(self,request):
         serializer = StudentSerializer(data=request.data)
@@ -102,13 +107,14 @@ class StudentDetailView(APIView):
         
     def enroll (self,student,course_id):
         course= Course.objects.get(id=course_id)
-        Student.courses.add(course)
+        student.courses.add(course)
+
     def unenroll (self,student,course_id):
         course = Course.objects.get(id=course_id) 
         student.courses.remove(course)
 
     def add_to_class(self, student, class_id):
-        student_class = Student_Class.objects.get(id=class_id)
+        student_class = Student.objects.get(id=class_id)
         student_class.students.add(student)
 
     def post(self, request, id):
@@ -183,7 +189,7 @@ class  ClassPeriodDetailView(APIView):
     def create_class_period(self, teacher_id, course_id):
         teacher = Teacher.objects.get(id=teacher_id)
         course = Course.objects.get(id=course_id)
-        class_period = Class_Period(teacher=teacher, course=course)
+        class_period = ClassPeriod(teacher=teacher, course=course)
         class_period.save()
         return Response(status=status.HTTP_201_CREATED)
         
@@ -231,7 +237,7 @@ class TeacherDetailView(APIView):
         teacher.courses.add(course)
 
     def assign_class(self, teacher, class_id):
-        student_class = Student_Class.objects.get(id=class_id)
+        student_class = Student.objects.get(id=class_id)
         student_class.teacher = teacher
         student_class.save()
 
